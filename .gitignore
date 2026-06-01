@@ -1,0 +1,30 @@
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+*.local
+
+# Azure Functions
+api/dist/
+api/local.settings.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Lovable source (reference only)
+_lovable_source/
+
+# Build artifacts
+*.tsbuildinfo
+
+# TanStack Router generated
+client/src/routeTree.gen.ts

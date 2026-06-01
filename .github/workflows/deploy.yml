@@ -1,0 +1,59 @@
+name: Deploy to Azure
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AZURE_RG: rg-presales-pipeline
+  SWA_NAME: presales-prod-swa
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            client/package-lock.json
+            api/package-lock.json
+
+      - name: Install client dependencies
+        run: npm ci
+        working-directory: client
+
+      - name: Build client
+        run: npm run build
+        working-directory: client
+        env:
+          VITE_AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          VITE_AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Install API dependencies
+        run: npm ci
+        working-directory: api
+
+      - name: Build API
+        run: npm run build
+        working-directory: api
+
+      - name: Deploy to Azure Static Web Apps
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.SWA_DEPLOYMENT_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          app_location: /client
+          api_location: /api
+          output_location: dist
+          skip_app_build: true
+          skip_api_build: true

@@ -1,0 +1,23 @@
+{
+  "name": "presales-pipeline-api",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "func start --typescript",
+    "start": "func start"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.6.0",
+    "pg": "^8.13.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/pg": "^8.11.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "typescript": "^5.8.3",
+    "azure-functions-core-tools": "^4.0.0"
+  }
+}
