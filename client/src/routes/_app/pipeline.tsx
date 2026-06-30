@@ -586,14 +586,14 @@ function PostRow({ w, idx, expanded, onToggle }: { w: WorkshopRow; idx: number; 
               />
             );
           })()}
-          <Link to="/workshops/$id" params={{ id: w.id }} className="hover:underline" onClick={(e) => e.stopPropagation()}>
+          <Link to="/workshops/$id" params={{ id: w.id }} className="hover:underline" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
             {w.accounts?.account_name ?? "—"}
           </Link>
         </div>
         <div className="text-sm text-muted-foreground">{w.poc_name ?? w.accounts?.account_manager_name ?? "—"}</div>
         <div className="text-sm tabular-nums">
           {w.est_revenue_url ? (
-            <a href={w.est_revenue_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline inline-flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+            <a href={w.est_revenue_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline inline-flex items-center gap-1" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
               {w.est_revenue_text} <span className="text-[10px]">↗ SF</span>
             </a>
           ) : (
