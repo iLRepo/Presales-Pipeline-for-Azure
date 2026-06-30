@@ -1,8 +1,5 @@
-import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { useAuth } from "@/lib/auth-context";
-import { Kanban, List, Building2, CheckSquare, BarChart3, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { createFileRoute, Outlet, Link, useRouterState } from "@tanstack/react-router";
+import { Kanban, List, Building2, CheckSquare, BarChart3 } from "lucide-react";
 
 export const Route = createFileRoute("/_app")({ component: AppLayout });
 
@@ -15,17 +12,7 @@ const NAV = [
 ] as const;
 
 function AppLayout() {
-  const { isAuthed, loading, user, signOut } = useAuth();
-  const nav = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
-
-  useEffect(() => {
-    if (!loading && !isAuthed) nav({ to: "/login" });
-  }, [loading, isAuthed, nav]);
-
-  if (loading || !isAuthed) {
-    return <div className="min-h-screen grid place-items-center text-muted-foreground">Loading...</div>;
-  }
 
   return (
     <div className="min-h-screen bg-background pl-60">
@@ -51,14 +38,6 @@ function AppLayout() {
             );
           })}
         </nav>
-        <div className="p-3 border-t border-sidebar-border">
-          <div className="px-3 py-2 text-xs text-sidebar-foreground/70">
-            <div className="truncate font-medium text-sidebar-foreground">{user?.email}</div>
-          </div>
-          <Button variant="ghost" size="sm" onClick={() => signOut()} className="w-full justify-start text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-accent">
-            <LogOut className="h-3.5 w-3.5 mr-2" /> Sign out
-          </Button>
-        </div>
       </aside>
       <main className="min-w-0 overflow-visible">
         <Outlet />

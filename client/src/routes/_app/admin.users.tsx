@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/lib/auth-context";
 import { getProfiles, grantRole, revokeRole } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,6 @@ export const Route = createFileRoute("/_app/admin/users")({ component: AdminUser
 type Row = { id: string; email: string | null; full_name: string | null; roles: string[] };
 
 function AdminUsers() {
-  const { isAdmin } = useAuth();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,8 +26,6 @@ function AdminUsers() {
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
-
-  if (!isAdmin) return <div className="p-6 text-muted-foreground">ATO Admin access required.</div>;
 
   const grant = async (uid: string, role: string) => {
     try { await grantRole(uid, role); toast.success("Role granted"); load(); } catch (e: any) { toast.error(e.message); }

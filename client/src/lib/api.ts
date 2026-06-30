@@ -1,15 +1,7 @@
-let tokenGetter: (() => Promise<string>) | null = null;
-
-export function setTokenGetter(fn: () => Promise<string>) {
-  tokenGetter = fn;
-}
-
 async function apiFetch<T = unknown>(path: string, options: RequestInit = {}): Promise<T> {
-  const token = tokenGetter ? await tokenGetter() : "";
   const headers: Record<string, string> = {
     ...Object.fromEntries(new Headers(options.headers).entries()),
   };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
   if (options.body && !headers["Content-Type"]) headers["Content-Type"] = "application/json";
 
   const res = await fetch(`/api${path}`, { ...options, headers });
