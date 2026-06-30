@@ -2,6 +2,7 @@
   "name": "presales-pipeline-api",
   "version": "1.0.0",
   "type": "module",
+  "main": "dist/functions/*.js",
   "scripts": {
     "build": "tsc",
     "dev": "func start --typescript",
