@@ -11,8 +11,8 @@ param location string = resourceGroup().location
 @secure()
 param pgAdminPassword string
 
-@description('PostgreSQL admin username')
-param pgAdminUser string = 'pgadmin'
+@description('PostgreSQL admin username (Cosmos DB for PostgreSQL always uses citus)')
+param pgAdminUser string = 'citus'
 
 @description('Entra ID tenant ID for auth')
 param entraIdTenantId string

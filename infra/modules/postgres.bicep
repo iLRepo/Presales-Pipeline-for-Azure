@@ -4,7 +4,7 @@ param name string
 @description('Azure region')
 param location string
 
-@description('Administrator username')
+@description('Administrator username (Cosmos DB for PostgreSQL always uses citus)')
 param adminUser string
 
 @description('Administrator password')
@@ -14,43 +14,24 @@ param adminPassword string
 @description('Resource tags')
 param tags object
 
-resource server 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' = {
+resource cluster 'Microsoft.DBforPostgreSQL/serverGroupsv2@2023-03-02-preview' = {
   name: name
   location: location
   tags: tags
-  sku: {
-    name: 'Standard_B1ms'
-    tier: 'Burstable'
-  }
   properties: {
-    version: '16'
-    administratorLogin: adminUser
+    postgresqlVersion: '16'
     administratorLoginPassword: adminPassword
-    storage: {
-      storageSizeGB: 32
-      autoGrow: 'Enabled'
-    }
-    backup: {
-      backupRetentionDays: 7
-      geoRedundantBackup: 'Disabled'
-    }
-    highAvailability: {
-      mode: 'Disabled'
-    }
+    coordinatorVCores: 2
+    coordinatorStorageQuotaInMb: 32768
+    coordinatorServerEdition: 'BurstableGeneralPurpose'
+    coordinatorEnablePublicIpAccess: true
+    nodeCount: 0
+    enableHa: false
   }
 }
 
-resource database 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2024-08-01' = {
-  parent: server
-  name: 'presales_pipeline'
-  properties: {
-    charset: 'UTF8'
-    collation: 'en_US.utf8'
-  }
-}
-
-resource firewallAzure 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2024-08-01' = {
-  parent: server
+resource firewallAzure 'Microsoft.DBforPostgreSQL/serverGroupsv2/firewallRules@2023-03-02-preview' = {
+  parent: cluster
   name: 'AllowAzureServices'
   properties: {
     startIpAddress: '0.0.0.0'
@@ -58,15 +39,6 @@ resource firewallAzure 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@
   }
 }
 
-resource requireSSL 'Microsoft.DBforPostgreSQL/flexibleServers/configurations@2024-08-01' = {
-  parent: server
-  name: 'require_secure_transport'
-  properties: {
-    value: 'on'
-    source: 'user-override'
-  }
-}
-
-output serverName string = server.name
-output fqdn string = server.properties.fullyQualifiedDomainName
-output databaseName string = database.name
+output serverName string = cluster.name
+output fqdn string = cluster.properties.serverNames[0].fullyQualifiedDomainName
+output databaseName string = 'citus'

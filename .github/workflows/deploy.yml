@@ -11,7 +11,7 @@ permissions:
 
 env:
   AZURE_RG: rg-presales-pipeline
-  SWA_NAME: presales-prod-swa
+  SWA_NAME: presales-dev-swa
 
 jobs:
   build-and-deploy:
