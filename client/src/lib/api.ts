@@ -35,6 +35,8 @@ export const createWorkshop = (data: Record<string, unknown>) =>
   apiFetch<any>("/workshops", { method: "POST", body: JSON.stringify(data) });
 export const updateWorkshop = (id: string, patch: Record<string, unknown>) =>
   apiFetch<any>(`/workshops/${id}`, { method: "PATCH", body: JSON.stringify(patch) });
+export const deleteWorkshop = (id: string) =>
+  apiFetch<void>(`/workshops/${id}`, { method: "DELETE" });
 
 // SOWs
 export const getSow = (id: string) => apiFetch<any>(`/sows/${id}`);

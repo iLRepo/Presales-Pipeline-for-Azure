@@ -16,11 +16,12 @@ app.http("workshopsList", {
 
     if (view === "pipeline") {
       const result = await pool.query(`
-        SELECT w.id, w.account_id, w.stage, w.stage_last_updated_at, w.planned_date_time,
+        SELECT w.id, w.account_id, w.stage, w.stage_last_updated_at, w.updated_at,
+               w.planned_date_time,
                w.ato_owner, w.eligibility_status, w.funding_anticipated_amount,
                w.technical_blocker, w.personnel_blocker,
-               w.poc_name, w.est_revenue_text, w.ms_funding_status, w.bucket,
-               w.use_cases_status, w.proposal_status, w.current_status,
+               w.poc_name, w.est_revenue_text, w.est_revenue_url, w.ms_funding_status,
+               w.bucket, w.use_cases_status, w.proposal_status, w.current_status,
                w.workshop_details, w.dependency_risks, w.next_steps, w.opportunities,
                json_build_object('account_name', a.account_name,
                                  'account_manager_name', a.account_manager_name,
@@ -123,7 +124,7 @@ app.http("workshopUpdate", {
       "funding_recognized_amount", "funding_anticipated_amount",
       "technical_blocker", "technical_blocker_comments",
       "personnel_blocker", "personnel_blocker_comments",
-      "ato_owner", "poc_name", "est_revenue_text", "ms_funding_status",
+      "ato_owner", "poc_name", "est_revenue_text", "est_revenue_url", "ms_funding_status",
       "bucket", "use_cases_status", "proposal_status", "current_status",
       "workshop_details", "dependency_risks", "next_steps", "opportunities",
       "notes",
@@ -152,5 +153,35 @@ app.http("workshopUpdate", {
     );
     if (result.rows.length === 0) return { status: 404, jsonBody: { error: "Not found" } };
     return { jsonBody: result.rows[0] };
+  },
+});
+
+app.http("workshopDelete", {
+  methods: ["DELETE"],
+  authLevel: "anonymous",
+  route: "workshops/{id}",
+  handler: async (req: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> => {
+    const user = await requireAuth(req, context);
+    if (!user) return { status: 401, jsonBody: { error: "Unauthorized" } };
+
+    const id = req.params.id;
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      await client.query("DELETE FROM tasks WHERE related_workshop_id = $1", [id]);
+      await client.query("DELETE FROM sows WHERE workshop_id = $1", [id]);
+      const result = await client.query("DELETE FROM workshops WHERE id = $1 RETURNING id", [id]);
+      if (result.rows.length === 0) {
+        await client.query("ROLLBACK");
+        return { status: 404, jsonBody: { error: "Not found" } };
+      }
+      await client.query("COMMIT");
+      return { status: 204 };
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
+    }
   },
 });
