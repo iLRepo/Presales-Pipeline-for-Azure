@@ -1,11 +1,12 @@
 import { createFileRoute, Outlet, Link, useRouterState } from "@tanstack/react-router";
-import { Kanban, List, Building2, CheckSquare, BarChart3 } from "lucide-react";
+import { Kanban, List, Building2, CheckSquare, BarChart3, Target } from "lucide-react";
 
 export const Route = createFileRoute("/_app")({ component: AppLayout });
 
 const NAV = [
   { to: "/pipeline", label: "Pipeline", icon: Kanban },
   { to: "/workshops", label: "Workshops", icon: List },
+  { to: "/ato-opportunities", label: "ATO Opportunities", icon: Target },
   { to: "/accounts", label: "Accounts", icon: Building2 },
   { to: "/tasks", label: "Tasks", icon: CheckSquare },
   { to: "/reports", label: "Reports", icon: BarChart3 },

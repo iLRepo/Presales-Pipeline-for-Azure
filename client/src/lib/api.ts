@@ -60,5 +60,15 @@ export const grantRole = (userId: string, role: string) =>
 export const revokeRole = (userId: string, role: string) =>
   apiFetch<void>(`/user-roles/${userId}/${encodeURIComponent(role)}`, { method: "DELETE" });
 
+// ATO Opportunities
+export const getAtoOpportunities = () => apiFetch<any[]>("/ato-opportunities");
+export const getAtoOpportunity = (id: string) => apiFetch<any>(`/ato-opportunities/${id}`);
+export const createAtoOpportunity = (data: Record<string, unknown>) =>
+  apiFetch<any>("/ato-opportunities", { method: "POST", body: JSON.stringify(data) });
+export const updateAtoOpportunity = (id: string, patch: Record<string, unknown>) =>
+  apiFetch<any>(`/ato-opportunities/${id}`, { method: "PATCH", body: JSON.stringify(patch) });
+export const deleteAtoOpportunity = (id: string) =>
+  apiFetch<void>(`/ato-opportunities/${id}`, { method: "DELETE" });
+
 // Reports
 export const getReports = () => apiFetch<any[]>("/reports");

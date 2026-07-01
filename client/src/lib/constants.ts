@@ -23,6 +23,9 @@ export type SowStatus = typeof SOW_STATUSES[number];
 
 export const ACTION_OWNERS = ["ATO", "Client", "Account Manager", "Alliance", "Other"] as const;
 
+export const ATO_OPP_STAGES = ["Identified", "Qualified", "Proposal", "SOW Submitted", "SOW Signed", "Closed Won", "Closed Lost"] as const;
+export type AtoOppStage = typeof ATO_OPP_STAGES[number];
+
 export const TASK_STATUSES = ["Open", "In Progress", "Done"] as const;
 export const ROLES = ["ATO Admin", "Account Manager", "Alliance Team"] as const;
 
